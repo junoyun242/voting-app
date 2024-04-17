@@ -1,0 +1,48 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1713360616223,
+      "tag": "0000_organic_doctor_doom",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1713360956689,
+      "tag": "0001_shallow_hellion",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1713362152665,
+      "tag": "0002_friendly_tomas",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1713363695186,
+      "tag": "0003_certain_selene",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1713364316017,
+      "tag": "0004_faithful_venus",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1713366323159,
+      "tag": "0005_known_iceman",
+      "breakpoints": true
+    }
+  ]
+}

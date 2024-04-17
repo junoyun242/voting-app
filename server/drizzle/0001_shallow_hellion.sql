@@ -1,0 +1,1 @@
+ALTER TABLE "polls" ADD COLUMN "token" varchar(100) NOT NULL;
