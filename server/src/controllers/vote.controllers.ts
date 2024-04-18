@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { TVotesTable, votesTable } from "../db/schema";
 import { db } from "../db/connection";
 import { eq } from "drizzle-orm";
+import { logger } from "../util/logger";
 
 export const castVote = async (req: Request, res: Response) => {
   const body: TVotesTable = req.body;
@@ -31,6 +32,7 @@ export const castVote = async (req: Request, res: Response) => {
       .returning();
     res.status(201).send({ vote: data[0] });
   } catch (err) {
+    logger.error(err);
     res.status(500).send(err);
   }
 };

@@ -101,6 +101,7 @@ const Poll = () => {
             onChange={() => setSelected(option.id)}
             label={option.option}
             disabled={disabled}
+            value={option.option}
           />
         ))}
       </Flex>
@@ -112,9 +113,12 @@ const Poll = () => {
       >
         {disabled ? "Done" : "Vote"}
       </Button>
-      <Text style={{ alignSelf: "end" }} c="blue">
-        Expires at: {dayjs(data.poll.expirationDate).format("YYYY-MM-DD HH:mm")}
-      </Text>
+      {data.poll.expirationDate && (
+        <Text style={{ alignSelf: "end" }} c="blue">
+          Expires at:{" "}
+          {dayjs(data.poll.expirationDate).format("YYYY-MM-DD HH:mm")}
+        </Text>
+      )}
       {voteData && (
         <BarChart
           h={200}

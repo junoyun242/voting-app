@@ -4,7 +4,7 @@ import { Flex, TextInput, Textarea, Button, Text } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import "@mantine/dates/styles.css";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import TokenAPI from "../../api/TokenAPI";
 import PollAPI from "../../api/PollAPI";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ const CreatePoll = () => {
   const now = dayjs();
   const weekFromNow = dayjs().add(1, "week");
   const [options, setOptions] = useState<string[]>([]);
+  const [option, setOption] = useState<string>("");
   const optionInputRef: RefObject<HTMLInputElement> = useRef(null);
 
   const colors: string[] = [
@@ -39,24 +40,20 @@ const CreatePoll = () => {
       title: "",
       description: "",
       expirationDate: "",
-      options: [""],
     },
 
     validate: {
       title: (val) => (val.length > 5 ? null : "Title too short"),
       description: (val) => (val.length > 5 ? null : "Description too short"),
-      options: (val) =>
-        val.length > 1 ? null : "Options should be at least 2",
     },
   });
   type FormValues = typeof form.values;
 
   const addOption = () => {
-    const option = optionInputRef.current?.value;
     if (!option) return;
-    setOptions([...options, option]);
-    optionInputRef.current.value = "";
-    optionInputRef.current.focus();
+    setOptions((options) => [...options, option]);
+    setOption("");
+    optionInputRef.current?.focus();
   };
 
   const deleteOption = (index: number) => {
@@ -74,10 +71,19 @@ const CreatePoll = () => {
   };
 
   const submit = async (values: FormValues) => {
-    const { title, description, options } = values;
-    const newExpirationDate = dayjs(values.expirationDate).format(
-      "YYYY-MM-DD HH:mm"
-    );
+    if (options.length < 2) {
+      modals.open({
+        title: "Error",
+        children: <Text c="red">Options should be at least two</Text>,
+        centered: true,
+      });
+      optionInputRef.current?.focus();
+      return;
+    }
+    const { title, description } = values;
+    const newExpirationDate = values.expirationDate
+      ? dayjs(values.expirationDate).format("YYYY-MM-DD HH:mm")
+      : undefined;
 
     try {
       const token = (await TokenAPI.issueToken()).token;
@@ -98,9 +104,6 @@ const CreatePoll = () => {
     }
   };
 
-  useEffect(() => {
-    form.setValues({ options });
-  }, [options]);
   return (
     <form onSubmit={form.onSubmit(submit)}>
       <Flex direction="column" w="100%" gap={15}>
@@ -139,7 +142,8 @@ const CreatePoll = () => {
                 addOption();
               }
             }}
-            {...form.getInputProps("options", { type: "checkbox" })}
+            onChange={(e) => setOption(e.target.value)}
+            value={option}
           />
           <Button w={150} mr={0} onClick={addOption} type="button">
             Add Option

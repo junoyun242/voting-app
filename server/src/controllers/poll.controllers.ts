@@ -8,6 +8,7 @@ import {
   votesTable,
 } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { logger } from "../util/logger";
 
 export const readPoll = async (req: Request, res: Response) => {
   const { token } = req.params;
@@ -58,6 +59,7 @@ export const readPoll = async (req: Request, res: Response) => {
     };
     res.status(200).send(resObj);
   } catch (err) {
+    logger.error(err);
     res.status(500).send(err);
   }
 };
@@ -65,13 +67,7 @@ export const readPoll = async (req: Request, res: Response) => {
 export const createPoll = async (req: Request, res: Response) => {
   const reqData: ICreatePollReq = req.body;
   const { title, description, token, options, expirationDate } = reqData;
-  if (
-    !title ||
-    !description ||
-    !token ||
-    !expirationDate ||
-    options.length === 0
-  ) {
+  if (!title || !description || !token || options.length === 0) {
     res.status(400).send("Wrong body");
     return;
   }
@@ -106,6 +102,7 @@ export const createPoll = async (req: Request, res: Response) => {
 
     res.status(201).send(resObj);
   } catch (err) {
+    logger.error(err);
     res.status(500).send(err);
   }
 };
