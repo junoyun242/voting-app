@@ -1,0 +1,167 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useForm } from "@mantine/form";
+import { Flex, TextInput, Textarea, Button, Text } from "@mantine/core";
+import { DateTimePicker } from "@mantine/dates";
+import dayjs from "dayjs";
+import "@mantine/dates/styles.css";
+import { RefObject, useEffect, useRef, useState } from "react";
+import TokenAPI from "../../api/TokenAPI";
+import PollAPI from "../../api/PollAPI";
+import { useNavigate } from "react-router-dom";
+import { modals } from "@mantine/modals";
+
+const CreatePoll = () => {
+  const navigate = useNavigate();
+  const now = dayjs();
+  const weekFromNow = dayjs().add(1, "week");
+  const [options, setOptions] = useState<string[]>([]);
+  const optionInputRef: RefObject<HTMLInputElement> = useRef(null);
+
+  const colors: string[] = [
+    "dark",
+    "red",
+    "pink",
+    "grape",
+    "violet",
+    "indigo",
+    "blue",
+    "cyan",
+    "green",
+    "lime",
+    "yellow",
+    "orange",
+    "teal",
+  ];
+
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      title: "",
+      description: "",
+      expirationDate: "",
+      options: [""],
+    },
+
+    validate: {
+      title: (val) => (val.length > 5 ? null : "Title too short"),
+      description: (val) => (val.length > 5 ? null : "Description too short"),
+      options: (val) =>
+        val.length > 1 ? null : "Options should be at least 2",
+    },
+  });
+  type FormValues = typeof form.values;
+
+  const addOption = () => {
+    const option = optionInputRef.current?.value;
+    if (!option) return;
+    setOptions([...options, option]);
+    optionInputRef.current.value = "";
+    optionInputRef.current.focus();
+  };
+
+  const deleteOption = (index: number) => {
+    const option = options[index];
+    modals.openConfirmModal({
+      title: `Delete ${option}?`,
+      centered: true,
+      labels: { confirm: "Delete", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onConfirm: () => {
+        const newOptions = options.filter((_, idx) => idx !== index);
+        setOptions(newOptions);
+      },
+    });
+  };
+
+  const submit = async (values: FormValues) => {
+    const { title, description, options } = values;
+    const newExpirationDate = dayjs(values.expirationDate).format(
+      "YYYY-MM-DD HH:mm"
+    );
+
+    try {
+      const token = (await TokenAPI.issueToken()).token;
+      await PollAPI.createPoll({
+        title,
+        description,
+        options,
+        expirationDate: newExpirationDate,
+        token,
+      });
+      navigate(`/poll/${token}`);
+    } catch (err) {
+      modals.open({
+        title: "Error",
+        children: <Text c="red">{String(err)}</Text>,
+        centered: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    form.setValues({ options });
+  }, [options]);
+  return (
+    <form onSubmit={form.onSubmit(submit)}>
+      <Flex direction="column" w="100%" gap={15}>
+        <TextInput
+          withAsterisk
+          label="Title"
+          placeholder="Title of the poll"
+          {...form.getInputProps("title")}
+        />
+        <Textarea
+          withAsterisk
+          label="Description"
+          placeholder="Description of the poll"
+          autosize
+          minRows={3}
+          {...form.getInputProps("description")}
+        />
+        <DateTimePicker
+          clearable={true}
+          valueFormat="YYYY-MM-DD HH:mm"
+          dropdownType="modal"
+          label="Pick date and time"
+          defaultValue={weekFromNow.toDate()}
+          minDate={now.toDate()}
+          {...form.getInputProps("expirationDate")}
+        />
+        <Flex w="100%" direction="column" gap={10}>
+          <TextInput
+            withAsterisk
+            label="Options"
+            placeholder="Options of the poll"
+            ref={optionInputRef}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addOption();
+              }
+            }}
+            {...form.getInputProps("options", { type: "checkbox" })}
+          />
+          <Button w={150} mr={0} onClick={addOption} type="button">
+            Add Option
+          </Button>
+        </Flex>
+        {options.length > 0 && (
+          <Flex gap={10} wrap="wrap" bg="gray" p={10}>
+            {options.map((option, idx) => (
+              <Button
+                bg={colors[idx]}
+                onClick={() => deleteOption(idx)}
+                key={`${option}-${idx}`}
+              >
+                {option}
+              </Button>
+            ))}
+          </Flex>
+        )}
+        <Button type="submit">Submit</Button>
+      </Flex>
+    </form>
+  );
+};
+
+export default CreatePoll;

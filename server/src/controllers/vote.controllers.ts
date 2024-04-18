@@ -29,7 +29,7 @@ export const castVote = async (req: Request, res: Response) => {
       .insert(votesTable)
       .values({ userID, optionID })
       .returning();
-    res.status(201).send(data[0]);
+    res.status(201).send({ vote: data[0] });
   } catch (err) {
     res.status(500).send(err);
   }

@@ -11,7 +11,6 @@ import { eq } from "drizzle-orm";
 
 export const readPoll = async (req: Request, res: Response) => {
   const { token } = req.params;
-
   try {
     const poll = await db
       .select({

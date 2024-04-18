@@ -18,7 +18,9 @@ export const pollsTable = pgTable("polls", {
   title: varchar("title", { length: 50 }).notNull(),
   description: varchar("description", { length: 500 }).notNull(),
   token: varchar("token", { length: 100 }).notNull(),
-  creatorID: integer("creator_id").references(() => usersTable.id),
+  creatorID: integer("creator_id").references(() => usersTable.id, {
+    onDelete: "cascade",
+  }),
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
   expirationDate: timestamp("expiration_data", { mode: "string" }),
 });
@@ -35,7 +37,7 @@ export const votesTable = pgTable("votes", {
   id: serial("id").primaryKey(),
   userID: integer("user_id").references(() => usersTable.id),
   optionID: integer("option_id")
-    .references(() => optionsTable.id)
+    .references(() => optionsTable.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
 });
