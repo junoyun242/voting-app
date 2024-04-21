@@ -8,7 +8,9 @@ import { loggerObj } from "./util/logger";
 const app = express();
 const PORT = 3001;
 
-app.use(cors());
+app.use(
+  cors({ origin: ["http://dev.vote.junoyun242.org", "http://localhost:5173"] })
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(
