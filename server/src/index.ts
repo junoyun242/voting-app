@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import TokenRoutes from "./routes/token.routes";
 import PollRoutes from "./routes/poll.routes";
@@ -24,5 +24,9 @@ app.use(
 app.use("/api/token", TokenRoutes);
 app.use("/api/poll", PollRoutes);
 app.use("/api/vote", VoteRoutes);
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("hello world");
+});
 
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
