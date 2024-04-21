@@ -24,11 +24,11 @@ app.use(
     responseWhitelist: ["body"],
   })
 );
-app.use("/token", TokenRoutes);
-app.use("/poll", PollRoutes);
-app.use("/vote", VoteRoutes);
+app.use("/api/token", TokenRoutes);
+app.use("/api/poll", PollRoutes);
+app.use("/api/vote", VoteRoutes);
 
-app.get("/", (req: Request, res: Response) => {
+app.get("*", (req: Request, res: Response) => {
   res.sendFile(join(process.cwd(), "..", "client", "dist", "index.html"));
 });
 
