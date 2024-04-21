@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "pm2-runtime start dist/index.js --name voting-app",
+    "start": "pm2 start dist/index.js --name voting-app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
