@@ -21,9 +21,9 @@ app.use(
     responseWhitelist: ["body"],
   })
 );
-app.use("/api/token", TokenRoutes);
-app.use("/api/poll", PollRoutes);
-app.use("/api/vote", VoteRoutes);
+app.use("/token", TokenRoutes);
+app.use("/poll", PollRoutes);
+app.use("/vote", VoteRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("hello world");
