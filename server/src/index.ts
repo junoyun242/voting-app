@@ -10,10 +10,7 @@ const app = express();
 const PORT = 3001;
 
 app.use(cors());
-app.use(
-  "/assets",
-  express.static(join(process.cwd(), "..", "client", "dist", "assets"))
-);
+app.use("/assets", express.static(join(process.cwd(), "client", "assets")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(
@@ -29,7 +26,7 @@ app.use("/api/poll", PollRoutes);
 app.use("/api/vote", VoteRoutes);
 
 app.get("*", (req: Request, res: Response) => {
-  res.sendFile(join(process.cwd(), "..", "client", "dist", "index.html"));
+  res.sendFile(join(process.cwd(), "client", "index.html"));
 });
 
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
