@@ -1,9 +1,12 @@
-import { Flex } from "@mantine/core";
-
+import { Flex, Button } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <Flex justify="center" align="center" h="100%">
-      Voting App
+      <Button bg="transparent" onClick={() => navigate("/")}>
+        Voting App
+      </Button>
     </Flex>
   );
 };
