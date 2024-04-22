@@ -15,6 +15,7 @@ import dayjs from "dayjs";
 import useVoteDisabledStore from "../../stores/VoteDisabledStore";
 import { BarChart } from "@mantine/charts";
 import "@mantine/charts/styles.css";
+import { CiShare1 } from "react-icons/ci";
 
 const Poll = () => {
   const navigate = useNavigate();
@@ -70,6 +71,28 @@ const Poll = () => {
     }
   };
 
+  const shareLink = async () => {
+    const shareData = {
+      title: `Voting App`,
+      text: window.location.href,
+      url: window.location.href,
+    };
+
+    if ("share" in navigator) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      modals.open({
+        title: "Error",
+        children: <Text c="red">Can't share on this device</Text>,
+        centered: true,
+      });
+    }
+  };
+
   if (isError) {
     modals.open({
       title: "Error",
@@ -90,7 +113,12 @@ const Poll = () => {
 
   return (
     <Flex direction="column" gap={20}>
-      <Title order={3}>{data?.poll.title}</Title>
+      <Flex align="center" gap={5}>
+        <Title order={3}>{data?.poll.title}</Title>
+        <Text c="blue" onClick={shareLink}>
+          <CiShare1 />
+        </Text>
+      </Flex>
       <Text>{data.poll.description}</Text>
       <Title order={5}>Choose your pick!</Title>
       <Flex gap={20} wrap="wrap">
