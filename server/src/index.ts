@@ -16,7 +16,7 @@ const file = readFileSync(join(process.cwd(), "swagger.yaml"), "utf8");
 const swaggerDocument = YAML.parse(file);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(
-  cors({ origin: ["http://dev.vote.junoyun242.org", "http://localhost:5173"] })
+  cors({ origin: ["https://dev.vote.junoyun242.org", "http://localhost:5173"] })
 );
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
