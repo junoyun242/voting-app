@@ -15,14 +15,19 @@ export const validateToken = async (req: Request, res: Response) => {
     res.status(400).send("Empty token");
     return;
   }
-  const polls = await db
-    .select()
-    .from(pollsTable)
-    .where(eq(pollsTable.token, token));
-  if (!polls.length) {
-    res.status(200).send({ empty: true });
-    return;
-  }
 
-  res.status(200).send({ empty: false });
+  try {
+    const polls = await db
+      .select()
+      .from(pollsTable)
+      .where(eq(pollsTable.token, token));
+    if (!polls.length) {
+      res.status(200).send({ empty: true });
+      return;
+    }
+
+    res.status(200).send({ empty: false });
+  } catch (err) {
+    res.status(500).send(err);
+  }
 };

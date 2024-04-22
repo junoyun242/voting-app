@@ -1,0 +1,209 @@
+openapi: 3.1.0
+info:
+  title: Voting App Server
+  version: v0.1
+
+servers:
+  - url: http://localhost:3001
+    description: Local Server
+  - url: https://dev.api.vote.junoyun242.org
+    description: Dev Server
+
+paths:
+  /token/issue:
+    get:
+      summary: Issue a token
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+  /token/validate/{token}:
+    get:
+      summary: Check if a token is empty or not
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  empty:
+                    type: boolean
+        400:
+          description: Empty token
+        500:
+          description: Internal Server Error
+  /poll/{token}:
+    get:
+      summary: Read poll
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  poll:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      createdAt:
+                        type: string
+                        example: 2024-04-22 21:36:13.566606
+                      expirationDate:
+                        type: string
+                        example: 2024-04-22 21:36:13.566606
+                  options:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        options:
+                          type: string
+                  votes:
+                    type: array
+                    items:
+                      type: array
+                      properties:
+                        id:
+                          type: integer
+                        createdAt:
+                          type: string
+                          example: 2024-04-22 21:36:13.566606
+                          nullable: true
+                        userID:
+                          type: integer
+                          nullable: true
+                        optionsID:
+                          type: integer
+        400:
+          description: Empty token
+        404:
+          description: Record doesn't exist
+        500:
+          description: Internal Server Error
+  /poll:
+    post:
+      summary: Create a new poll
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                token:
+                  type: string
+                expirationDate:
+                  type: string
+                  example: 2024-04-22 21:36:13.566606
+                options:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  poll:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      token:
+                        type: string
+                      creatorID:
+                        type: integer
+                        nullable: true
+                      createdAt:
+                        type: string
+                        example: 2024-04-22 21:36:13.566606
+                      expirationDate:
+                        type: string
+                        example: 2024-04-22 21:36:13.566606
+                  options:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        options:
+                          type: string
+                        pollID:
+                          type: integer
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+  /vote:
+    post:
+      summary: Cast vote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                optionID:
+                  type: integer
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  userID:
+                    type: integer
+                    nullable: true
+                  optionID:
+                    type: integer
+                  createdAt:
+                    type: string
+                    example: 2024-04-22 21:52:38.032917
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error

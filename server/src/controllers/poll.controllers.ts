@@ -12,6 +12,10 @@ import { logger } from "../util/logger";
 
 export const readPoll = async (req: Request, res: Response) => {
   const { token } = req.params;
+
+  if (typeof token !== "string") {
+    res.status(400).send("Empty token");
+  }
   try {
     const poll = await db
       .select({
@@ -39,7 +43,7 @@ export const readPoll = async (req: Request, res: Response) => {
       .where(eq(pollsTable.token, token));
 
     if (!poll.length) {
-      res.status(500).send("Internal server error");
+      res.status(404).send("Record doesn't exist");
       return;
     }
 
