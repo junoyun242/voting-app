@@ -4,6 +4,7 @@ import Home from "./routes/Home";
 import CreatePoll from "./routes/poll/CreatePoll";
 import Poll from "./routes/poll/Poll";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "react-query-devtools";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <RouterProvider router={router} />
     </QueryClientProvider>
   );

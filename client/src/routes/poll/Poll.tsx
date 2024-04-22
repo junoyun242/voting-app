@@ -33,7 +33,7 @@ const Poll = () => {
       if (!token) return null;
       return PollAPI.readPoll(token);
     },
-    staleTime: Infinity,
+    refetchInterval: 3000,
   });
 
   const voteData = data?.options.map((option) => ({
