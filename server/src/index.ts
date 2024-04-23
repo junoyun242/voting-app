@@ -3,6 +3,7 @@ import cors from "cors";
 import TokenRoutes from "./routes/token.routes";
 import PollRoutes from "./routes/poll.routes";
 import VoteRoutes from "./routes/vote.routes";
+import CommentRoutes from "./routes/comment.routes";
 import expressWinston from "express-winston";
 import { loggerObj } from "./util/logger";
 import swaggerUI from "swagger-ui-express";
@@ -31,6 +32,7 @@ app.use(
 app.use("/token", TokenRoutes);
 app.use("/poll", PollRoutes);
 app.use("/vote", VoteRoutes);
+app.use("/", CommentRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("hello world");

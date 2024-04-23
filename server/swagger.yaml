@@ -207,3 +207,87 @@ paths:
           description: Bad request
         500:
           description: Internal Server Error
+  /comment:
+    post:
+      summary: Create a new comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pollID:
+                  type: integer
+                  example: 1
+                content:
+                  type: string
+                  example: This is a comment
+                nickname:
+                  type: string
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  userID:
+                    type: integer
+                    nullable: true
+                  pollID:
+                    type: integer
+                  content:
+                    type: string
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error
+  /comments:
+    get:
+      summary: Get comments
+      parameters:
+        - in: path
+          name: pollID
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        userID:
+                          type: integer
+                          nullable: true
+                        pollID:
+                          type: integer
+                        content:
+                          type: string
+                        createdAt:
+                          type: string
+                          example: 2024-04-22 21:52:38.032917
+                        updatedAt:
+                          type: string
+                          example: 2024-04-22 21:52:38.032917
+
+        400:
+          description: Bad request
+        500:
+          description: Internal Server Error

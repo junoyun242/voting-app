@@ -1,0 +1,1 @@
+ALTER TABLE "poll_comments" ADD COLUMN "username" varchar(50) NOT NULL;

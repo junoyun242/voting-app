@@ -18,6 +18,10 @@ import "@mantine/charts/styles.css";
 import { CiShare1 } from "react-icons/ci";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import CreateComment from "../../components/comments/CreateComment";
+import CommentAPI from "../../api/CommentAPI";
+import { useDisclosure } from "@mantine/hooks";
+import Comment from "../../components/comments/Comment";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -27,6 +31,7 @@ const Poll = () => {
   const navigate = useNavigate();
   const { token } = useParams();
   const [selected, setSelected] = useState<number | null>(null);
+  const [opened, { open, close }] = useDisclosure(false);
   const disabledList = useVoteDisabledStore((state) => state.disabled);
   const setDisabledList = useVoteDisabledStore((state) => state.setDisabled);
   const votesList = useVoteDisabledStore((state) => state.votes);
@@ -34,25 +39,38 @@ const Poll = () => {
   const disabled = disabledList?.includes(token || "");
   const myVote = votesList?.find((vote) => vote.token === token);
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const {
+    data: pollData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["readPoll", token],
     queryFn: () => {
       if (!token) return null;
       return PollAPI.readPoll(token);
     },
-
     refetchInterval: 3000,
   });
 
-  const expired = data?.poll.expirationDate
-    ? dayjs(data.poll.expirationDate).isBefore(dayjs())
+  const { data: commentData, isLoading: commentsIsLoading } = useQuery({
+    queryKey: ["readComments", pollData?.poll.id],
+    queryFn: () => {
+      if (!pollData?.poll.id) return null;
+      return CommentAPI.readComments(pollData.poll.id);
+    },
+    refetchInterval: 3000,
+  });
+
+  const expired = pollData?.poll.expirationDate
+    ? dayjs(pollData.poll.expirationDate).isBefore(dayjs())
       ? true
       : false
     : false;
 
-  const voteData = data?.options.map((option) => ({
+  const voteData = pollData?.options.map((option) => ({
     Option: option.option,
-    count: data.votes.filter((vote) => vote.optionID === option.id).length,
+    count: pollData.votes.filter((vote) => vote.optionID === option.id).length,
   }));
 
   const castVote = async () => {
@@ -84,9 +102,24 @@ const Poll = () => {
     }
   };
 
-  const mutation = useMutation({
+  const pollMutation = useMutation({
     mutationFn: castVote,
   });
+
+  const commentMutation = useMutation({
+    mutationFn: (val: { pollID: number; content: string; nickname: string }) =>
+      CommentAPI.createComment(val.pollID, val.content, val.nickname),
+  });
+
+  const newComment = async (content: string, nickname: string) => {
+    if (!pollData?.poll.id) return;
+    await commentMutation.mutateAsync({
+      pollID: pollData.poll.id,
+      content,
+      nickname,
+    });
+    close();
+  };
 
   const shareLink = async () => {
     const shareData = {
@@ -119,7 +152,14 @@ const Poll = () => {
     return <></>;
   }
 
-  if (isLoading || !data || !token || mutation.isPending)
+  if (
+    isLoading ||
+    !pollData ||
+    !token ||
+    pollMutation.isPending ||
+    commentMutation.isPending ||
+    commentsIsLoading
+  )
     return (
       <LoadingOverlay
         visible={true}
@@ -128,7 +168,7 @@ const Poll = () => {
       />
     );
 
-  if (!data) {
+  if (!pollData) {
     navigate("/");
     return <></>;
   }
@@ -136,15 +176,15 @@ const Poll = () => {
   return (
     <Flex direction="column" gap={20}>
       <Flex align="center" gap={5}>
-        <Title order={3}>{data?.poll.title}</Title>
+        <Title order={3}>{pollData?.poll.title}</Title>
         <Text c="blue" onClick={shareLink}>
           <CiShare1 />
         </Text>
       </Flex>
-      <Text>{data.poll.description}</Text>
+      <Text>{pollData.poll.description}</Text>
       <Title order={5}>Choose your pick!</Title>
       <Flex gap={20} wrap="wrap">
-        {data.options.map((option) => (
+        {pollData.options.map((option) => (
           <Radio
             key={option.id}
             checked={option.id === selected || myVote?.optionID === option.id}
@@ -158,23 +198,23 @@ const Poll = () => {
       <Button
         style={{ alignSelf: "end" }}
         w={100}
-        onClick={() => mutation.mutate()}
+        onClick={() => pollMutation.mutate()}
         disabled={disabled || expired}
       >
         {disabled || expired ? "Done" : "Vote"}
       </Button>
-      {data.poll.expirationDate && (
+      {pollData.poll.expirationDate && (
         <Text style={{ alignSelf: "end" }} c="blue">
           {expired
-            ? `Expired at ${dayjs(data.poll.expirationDate).format(
+            ? `Expired at ${dayjs(pollData.poll.expirationDate).format(
                 "YYYY-MM-DD HH:mm"
               )}`
             : `Expires at:
-          ${dayjs(data.poll.expirationDate).format("YYYY-MM-DD HH:mm")}`}
+          ${dayjs(pollData.poll.expirationDate).format("YYYY-MM-DD HH:mm")}`}
         </Text>
       )}
       <Text style={{ alignSelf: "end" }} c="green">
-        Total Votes: {data.votes.length}
+        Total Votes: {pollData.votes.length}
       </Text>
       {voteData && (
         <BarChart
@@ -188,6 +228,18 @@ const Poll = () => {
           barChartProps={{ syncId: "tech" }}
         />
       )}
+      <Flex direction="column" mb={50} gap={10}>
+        <Title order={4}>Comments</Title>
+        <Button w={150} style={{ alignSelf: "end" }} onClick={open}>
+          New Comment
+        </Button>
+        <CreateComment opened={opened} mutationFn={newComment} close={close} />
+      </Flex>
+      <Flex direction="column">
+        {commentData?.data.map((comment) => (
+          <Comment comment={comment} key={comment.id} />
+        ))}
+      </Flex>
     </Flex>
   );
 };

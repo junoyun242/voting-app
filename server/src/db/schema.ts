@@ -1,5 +1,4 @@
 import {
-  bigserial,
   integer,
   pgTable,
   serial,
@@ -59,11 +58,26 @@ export const votesTable = pgTable("votes", {
   }).defaultNow(),
 });
 
-// export const pollCommentsTable = pgTable("poll_comments", {
-//   id: bigserial("id").primaryKey(),
-// });
+export const pollCommentsTable = pgTable("poll_comments", {
+  id: serial("id").primaryKey(),
+  userID: integer("user_id").references(() => usersTable.id),
+  nickname: varchar("username", { length: 50 }).notNull(),
+  pollID: integer("poll_id")
+    .references(() => pollsTable.id, { onDelete: "cascade" })
+    .notNull(),
+  content: varchar("content", { length: 100 }).notNull(),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+    withTimezone: true,
+  }).defaultNow(),
+  updatedAt: timestamp("updated_at", {
+    mode: "string",
+    withTimezone: true,
+  }).defaultNow(),
+});
 
 export type TUsersTable = typeof usersTable.$inferSelect;
 export type TPollsTable = typeof pollsTable.$inferSelect;
 export type TOptionsTable = typeof optionsTable.$inferSelect;
 export type TVotesTable = typeof votesTable.$inferSelect;
+export type TPollCommentsTable = typeof pollCommentsTable.$inferSelect;
