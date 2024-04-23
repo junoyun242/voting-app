@@ -173,6 +173,9 @@ const Poll = () => {
           ${dayjs(data.poll.expirationDate).format("YYYY-MM-DD HH:mm")}`}
         </Text>
       )}
+      <Text style={{ alignSelf: "end" }} c="green">
+        Total Votes: {data.votes.length}
+      </Text>
       {voteData && (
         <BarChart
           h={200}
