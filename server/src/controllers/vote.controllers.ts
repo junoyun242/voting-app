@@ -1,8 +1,14 @@
 import { Request, Response } from "express";
-import { TVotesTable, votesTable } from "../db/schema";
+import {
+  TVotesTable,
+  optionsTable,
+  pollsTable,
+  votesTable,
+} from "../db/schema";
 import { db } from "../db/connection";
 import { eq } from "drizzle-orm";
 import { logger } from "../util/logger";
+import dayjs from "dayjs";
 
 export const castVote = async (req: Request, res: Response) => {
   const body: TVotesTable = req.body;
@@ -24,6 +30,21 @@ export const castVote = async (req: Request, res: Response) => {
         res.status(400).send("Vote already cast");
         return;
       }
+    }
+
+    const poll = await db
+      .select()
+      .from(pollsTable)
+      .innerJoin(optionsTable, eq(pollsTable.id, optionsTable.pollID))
+      .where(eq(optionsTable.id, optionID));
+    if (!poll) {
+      res.status(400).send("Bad request");
+      return;
+    }
+
+    if (dayjs(poll[0].polls.expirationDate).isBefore(dayjs())) {
+      res.status(400).send("Expired");
+      return;
     }
 
     const data = await db
