@@ -47,6 +47,8 @@ export const castVote = async (req: Request, res: Response) => {
       return;
     }
 
+    await db.update(pollsTable).set({ updatedAt: dayjs().toISOString() });
+
     const data = await db
       .insert(votesTable)
       .values({ userID, optionID })

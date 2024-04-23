@@ -116,6 +116,7 @@ const Poll = () => {
       centered: true,
     });
     navigate("/");
+    return <></>;
   }
 
   if (isLoading || !data || !token || mutation.isPending)
@@ -126,6 +127,11 @@ const Poll = () => {
         overlayProps={{ radius: "sm", blur: 2 }}
       />
     );
+
+  if (!data) {
+    navigate("/");
+    return <></>;
+  }
 
   return (
     <Flex direction="column" gap={20}>

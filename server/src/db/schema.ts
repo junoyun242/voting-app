@@ -29,7 +29,10 @@ export const pollsTable = pgTable("polls", {
     mode: "string",
     withTimezone: true,
   }).defaultNow(),
-  // updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
+  updatedAt: timestamp("updated_at", {
+    mode: "string",
+    withTimezone: true,
+  }).defaultNow(),
   expirationDate: timestamp("expiration_data", {
     mode: "string",
     withTimezone: true,

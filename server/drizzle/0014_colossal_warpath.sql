@@ -1,0 +1,1 @@
+ALTER TABLE "polls" ADD COLUMN "updated_at" timestamp DEFAULT now();
