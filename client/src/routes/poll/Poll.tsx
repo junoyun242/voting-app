@@ -16,6 +16,12 @@ import useVoteDisabledStore from "../../stores/VoteDisabledStore";
 import { BarChart } from "@mantine/charts";
 import "@mantine/charts/styles.css";
 import { CiShare1 } from "react-icons/ci";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.guess();
 
 const Poll = () => {
   const navigate = useNavigate();

@@ -71,6 +71,34 @@
       "when": 1713435939554,
       "tag": "0009_nappy_dark_phoenix",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1713879986994,
+      "tag": "0010_foamy_wild_child",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1713880032696,
+      "tag": "0011_fine_harry_osborn",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1713880304350,
+      "tag": "0012_panoramic_stick",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1713880591355,
+      "tag": "0013_left_sugar_man",
+      "breakpoints": true
     }
   ]
 }

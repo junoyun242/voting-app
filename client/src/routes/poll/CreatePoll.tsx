@@ -91,7 +91,7 @@ const CreatePoll = () => {
     setIsLoading(true);
     const { title, description } = values;
     const newExpirationDate = values.expirationDate
-      ? dayjs(values.expirationDate).format("YYYY-MM-DD HH:mm")
+      ? dayjs(values.expirationDate).toISOString()
       : undefined;
 
     try {

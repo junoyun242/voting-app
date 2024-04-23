@@ -1,4 +1,5 @@
 import {
+  bigserial,
   integer,
   pgTable,
   serial,
@@ -10,7 +11,10 @@ export const usersTable = pgTable("users", {
   id: serial("id").primaryKey(),
   username: varchar("username", { length: 50 }).unique().notNull(),
   password: varchar("password", { length: 100 }).notNull(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+    withTimezone: true,
+  }).defaultNow(),
 });
 
 export const pollsTable = pgTable("polls", {
@@ -21,8 +25,15 @@ export const pollsTable = pgTable("polls", {
   creatorID: integer("creator_id").references(() => usersTable.id, {
     onDelete: "cascade",
   }),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
-  expirationDate: timestamp("expiration_data", { mode: "string" }),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+    withTimezone: true,
+  }).defaultNow(),
+  // updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
+  expirationDate: timestamp("expiration_data", {
+    mode: "string",
+    withTimezone: true,
+  }),
 });
 
 export const optionsTable = pgTable("options", {
@@ -39,8 +50,15 @@ export const votesTable = pgTable("votes", {
   optionID: integer("option_id")
     .references(() => optionsTable.id, { onDelete: "cascade" })
     .notNull(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+    withTimezone: true,
+  }).defaultNow(),
 });
+
+// export const pollCommentsTable = pgTable("poll_comments", {
+//   id: bigserial("id").primaryKey(),
+// });
 
 export type TUsersTable = typeof usersTable.$inferSelect;
 export type TPollsTable = typeof pollsTable.$inferSelect;
