@@ -7,7 +7,7 @@ import {
   Radio,
   Button,
 } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import PollAPI from "../../api/PollAPI";
 import { modals } from "@mantine/modals";
 import { useState } from "react";
@@ -34,6 +34,7 @@ const Poll = () => {
       if (!token) return null;
       return PollAPI.readPoll(token);
     },
+
     refetchInterval: 3000,
   });
 
@@ -71,6 +72,10 @@ const Poll = () => {
     }
   };
 
+  const mutation = useMutation({
+    mutationFn: castVote,
+  });
+
   const shareLink = async () => {
     const shareData = {
       title: `Voting App`,
@@ -102,7 +107,7 @@ const Poll = () => {
     navigate("/");
   }
 
-  if (isLoading || !data || !token)
+  if (isLoading || !data || !token || mutation.isPending)
     return (
       <LoadingOverlay
         visible={true}
@@ -136,7 +141,7 @@ const Poll = () => {
       <Button
         style={{ alignSelf: "end" }}
         w={100}
-        onClick={castVote}
+        onClick={() => mutation.mutate()}
         disabled={disabled}
       >
         {disabled ? "Done" : "Vote"}

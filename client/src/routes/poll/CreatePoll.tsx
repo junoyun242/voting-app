@@ -1,6 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useForm } from "@mantine/form";
-import { Flex, TextInput, Textarea, Button, Text } from "@mantine/core";
+import {
+  Flex,
+  TextInput,
+  Textarea,
+  Button,
+  Text,
+  LoadingOverlay,
+} from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import "@mantine/dates/styles.css";
@@ -16,6 +23,7 @@ const CreatePoll = () => {
   const weekFromNow = dayjs().add(1, "week");
   const [options, setOptions] = useState<string[]>([]);
   const [option, setOption] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const optionInputRef: RefObject<HTMLInputElement> = useRef(null);
 
   const colors: string[] = [
@@ -43,8 +51,8 @@ const CreatePoll = () => {
     },
 
     validate: {
-      title: (val) => (val.length > 5 ? null : "Title too short"),
-      description: (val) => (val.length > 5 ? null : "Description too short"),
+      title: (val) => (val.length >= 3 ? null : "Title too short"),
+      description: (val) => (val.length >= 5 ? null : "Description too short"),
     },
   });
   type FormValues = typeof form.values;
@@ -80,6 +88,7 @@ const CreatePoll = () => {
       optionInputRef.current?.focus();
       return;
     }
+    setIsLoading(true);
     const { title, description } = values;
     const newExpirationDate = values.expirationDate
       ? dayjs(values.expirationDate).format("YYYY-MM-DD HH:mm")
@@ -101,8 +110,19 @@ const CreatePoll = () => {
         children: <Text c="red">{String(err)}</Text>,
         centered: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading)
+    return (
+      <LoadingOverlay
+        visible={true}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
+    );
 
   return (
     <form onSubmit={form.onSubmit(submit)}>
