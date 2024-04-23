@@ -38,6 +38,12 @@ const Poll = () => {
     refetchInterval: 3000,
   });
 
+  const expired = data?.poll.expirationDate
+    ? dayjs(data.poll.expirationDate).isBefore(dayjs())
+      ? true
+      : false
+    : false;
+
   const voteData = data?.options.map((option) => ({
     Option: option.option,
     count: data.votes.filter((vote) => vote.optionID === option.id).length,
@@ -79,7 +85,6 @@ const Poll = () => {
   const shareLink = async () => {
     const shareData = {
       title: `Voting App`,
-      text: window.location.href,
       url: window.location.href,
     };
 
@@ -133,7 +138,7 @@ const Poll = () => {
             checked={option.id === selected || myVote?.optionID === option.id}
             onChange={() => setSelected(option.id)}
             label={option.option}
-            disabled={disabled}
+            disabled={disabled || expired}
             value={option.option}
           />
         ))}
@@ -142,14 +147,18 @@ const Poll = () => {
         style={{ alignSelf: "end" }}
         w={100}
         onClick={() => mutation.mutate()}
-        disabled={disabled}
+        disabled={disabled || expired}
       >
-        {disabled ? "Done" : "Vote"}
+        {disabled || expired ? "Done" : "Vote"}
       </Button>
       {data.poll.expirationDate && (
         <Text style={{ alignSelf: "end" }} c="blue">
-          Expires at:{" "}
-          {dayjs(data.poll.expirationDate).format("YYYY-MM-DD HH:mm")}
+          {expired
+            ? `Expired at ${dayjs(data.poll.expirationDate).format(
+                "YYYY-MM-DD HH:mm"
+              )}`
+            : `Expires at:
+          ${dayjs(data.poll.expirationDate).format("YYYY-MM-DD HH:mm")}`}
         </Text>
       )}
       {voteData && (
