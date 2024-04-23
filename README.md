@@ -1,15 +1,9 @@
-## Client
+## Todos
 
-- Vite
-- React
-- Mantine
-- TypeScript
-
-## Server
-
-- Go
-- Chi
-- Postgresql
+- [ ] Add loading when creating poll
+- [ ] Add loading when casting vote
+- [ ] Set expiration date
+- [ ] Set visibility related to expiration date
 
 ```mermaid
 ---
