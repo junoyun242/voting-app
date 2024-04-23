@@ -4,7 +4,8 @@
 - [x] Add loading when casting vote
 - [x] Set expiration date
 - [x] Set visibility related to expiration date
-- [ ] Add comments to poll
+- [x] Add comments to poll
+- [ ] Add loading when revalidating comments after creation
 
 ```mermaid
 ---
