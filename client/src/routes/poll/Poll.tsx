@@ -22,12 +22,14 @@ import CreateComment from "../../components/comments/CreateComment";
 import CommentAPI from "../../api/CommentAPI";
 import { useDisclosure } from "@mantine/hooks";
 import Comment from "../../components/comments/Comment";
+import { useQueryClient } from "@tanstack/react-query";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.guess();
 
 const Poll = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { token } = useParams();
   const [selected, setSelected] = useState<number | null>(null);
@@ -109,6 +111,9 @@ const Poll = () => {
   const commentMutation = useMutation({
     mutationFn: (val: { pollID: number; content: string; nickname: string }) =>
       CommentAPI.createComment(val.pollID, val.content, val.nickname),
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["readComments"] });
+    },
   });
 
   const newComment = async (content: string, nickname: string) => {
