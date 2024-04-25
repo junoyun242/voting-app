@@ -1,14 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button, Flex, Input, Text } from "@mantine/core";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import { useOs } from "@mantine/hooks";
-import "@mantine/notifications/styles.css";
-import { notifications } from "@mantine/notifications";
 
 const Home = () => {
-  const os = useOs();
   const navigate = useNavigate();
   const [pollToken, setPollToken] = useState<string>("");
 
@@ -23,17 +19,6 @@ const Home = () => {
     }
     navigate(`/poll/${pollToken}`);
   };
-
-  useEffect(() => {
-    if (os === "undetermined") return;
-    if (os !== "ios" && os !== "android") {
-      notifications.show({
-        title: "This app is designed for mobile",
-        message: `It looks like you're using ${os}. Use your phone for the best experience`,
-        color: "red",
-      });
-    }
-  }, [os]);
   return (
     <Flex direction="column" align="center" gap={30}>
       <Button w={200}>
