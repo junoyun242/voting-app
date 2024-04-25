@@ -21,9 +21,9 @@ const Home = () => {
   };
   return (
     <Flex direction="column" align="center" gap={30}>
-      <Button w={200}>
+      <Button w={200} onClick={() => navigate("/poll/create")}>
         <Link
-          style={{ textDecoration: "none", color: "white" }}
+          style={{ textDecoration: "none", color: "white", width: "100%" }}
           to="/poll/create"
         >
           Create A New Poll
