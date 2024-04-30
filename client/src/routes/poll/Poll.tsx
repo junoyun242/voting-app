@@ -189,16 +189,18 @@ const Poll = () => {
       <Text>{pollData.poll.description}</Text>
       <Title order={5}>Choose your pick!</Title>
       <Flex gap={20} wrap="wrap">
-        {pollData.options.map((option) => (
-          <Radio
-            key={option.id}
-            checked={option.id === selected || myVote?.optionID === option.id}
-            onChange={() => setSelected(option.id)}
-            label={option.option}
-            disabled={disabled || expired}
-            value={option.option}
-          />
-        ))}
+        {pollData.options
+          .sort((a, b) => a.id - b.id)
+          .map((option) => (
+            <Radio
+              key={option.id}
+              checked={option.id === selected || myVote?.optionID === option.id}
+              onChange={() => setSelected(option.id)}
+              label={option.option}
+              disabled={disabled || expired}
+              value={option.option}
+            />
+          ))}
       </Flex>
       <Button
         style={{ alignSelf: "end" }}
@@ -209,7 +211,7 @@ const Poll = () => {
         {disabled || expired ? "Done" : "Vote"}
       </Button>
       {pollData.poll.expirationDate && (
-        <Text style={{ alignSelf: "end" }} c="blue">
+        <Text style={{ alignSelf: "end" }} c={expired ? "red" : "blue"}>
           {expired
             ? `Expired at ${dayjs(pollData.poll.expirationDate).format(
                 "YYYY-MM-DD HH:mm"
@@ -233,7 +235,7 @@ const Poll = () => {
           barChartProps={{ syncId: "tech" }}
         />
       )}
-      <Flex direction="column" mb={50} gap={10}>
+      <Flex direction="column" mb={50} mt={20} gap={10}>
         <Title order={4}>Comments</Title>
         <Button w={150} style={{ alignSelf: "end" }} onClick={open}>
           New Comment
