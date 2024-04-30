@@ -131,14 +131,21 @@ const Poll = () => {
       title: `Voting App`,
       url: window.location.href,
     };
-
-    if ("share" in navigator) {
-      try {
+    try {
+      if (navigator.share) {
         await navigator.share(shareData);
-      } catch (err) {
-        console.error(err);
+      } else {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(shareData.url);
+          modals.open({
+            title: "URL copied to the clipboard!",
+            centered: true,
+          });
+        } else {
+          throw new Error("Can't copy");
+        }
       }
-    } else {
+    } catch (err) {
       modals.open({
         title: "Error",
         children: <Text c="red">Can't share on this device</Text>,
