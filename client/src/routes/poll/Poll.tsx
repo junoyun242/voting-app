@@ -70,10 +70,13 @@ const Poll = () => {
       : false
     : false;
 
-  const voteData = pollData?.options.map((option) => ({
-    Option: option.option,
-    count: pollData.votes.filter((vote) => vote.optionID === option.id).length,
-  }));
+  const voteData = pollData?.options
+    .sort((a, b) => a.id - b.id)
+    .map((option) => ({
+      Option: option.option,
+      count: pollData.votes.filter((vote) => vote.optionID === option.id)
+        .length,
+    }));
 
   const castVote = async () => {
     if (!setDisabledList || !setVotesList) return;
