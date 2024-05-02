@@ -52,7 +52,7 @@ const CreatePoll = () => {
 
     validate: {
       title: (val) => (val.length >= 3 ? null : "Title too short"),
-      description: (val) => (val.length >= 5 ? null : "Description too short"),
+      description: (val) => (val.length >= 3 ? null : "Description too short"),
     },
   });
   type FormValues = typeof form.values;
