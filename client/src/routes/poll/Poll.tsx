@@ -146,11 +146,7 @@ const Poll = () => {
         }
       }
     } catch (err) {
-      modals.open({
-        title: "Error",
-        children: <Text c="red">Can't share on this device</Text>,
-        centered: true,
-      });
+      console.log(err);
     }
   };
 
