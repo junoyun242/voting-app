@@ -6,7 +6,7 @@ const HowToUseThisApp = () => {
       <Title order={2} mb={10}>
         FAQ
       </Title>
-      <Accordion defaultValue="create">
+      <Accordion>
         <Accordion.Item value="create">
           <Accordion.Control p={0}>How To Create a Poll</Accordion.Control>
           <Accordion.Panel>
