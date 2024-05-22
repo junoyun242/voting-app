@@ -46,7 +46,7 @@ const HowToUseThisApp = () => {
             <Text display="inline" fw="bold" c="blue">
               URL of the poll
             </Text>{" "}
-            to your friends. They votes will be updated in real-time.
+            to your friends. Their votes will be updated in real-time.
           </Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item value="caution">
