@@ -8,7 +8,7 @@ const HowToUseThisApp = () => {
       </Title>
       <Accordion>
         <Accordion.Item value="create">
-          <Accordion.Control p={0}>How To Create a Poll</Accordion.Control>
+          <Accordion.Control p={0}>How to Create a Poll</Accordion.Control>
           <Accordion.Panel>
             You can create a new poll by clicking the{" "}
             <Text display="inline" fw="bold" c="blue">
@@ -18,7 +18,7 @@ const HowToUseThisApp = () => {
           </Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item value="join">
-          <Accordion.Control p={0}>How To Join a Poll</Accordion.Control>
+          <Accordion.Control p={0}>How to Join a Poll</Accordion.Control>
           <Accordion.Panel>
             You can join an existing poll by inserting the poll token in the{" "}
             <Text display="inline" fw="bold" c="blue">
